@@ -44,12 +44,42 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user sources here
+    # CherryDAP core
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/dap_main.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/DAP/Source/DAP.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/DAP/Source/SW_DP.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/DAP/Source/JTAG_DP.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/DAP/Source/SWO.c
+
+    # CherryUSB stack core
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/CherryUSB/core/usbd_core.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/CherryUSB/class/cdc/usbd_cdc_acm.c
+
+    # CherryUSB DWC2 port (STM32 USB OTG FS)
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/CherryUSB/port/dwc2/usb_dc_dwc2.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/CherryUSB/port/dwc2/usb_glue_st.c
+
+    # CherryRB ringbuffer
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/CherryRB/CherryRB-master/chry_ringbuffer.c
+
+    # Bare-metal OSAL for CherryUSB
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/usb_osal_none.c
 )
 
-# Add include paths
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined include paths
+# Add include paths (SYSTEM to keep them after HAL paths for correct include order)
+target_include_directories(${CMAKE_PROJECT_NAME} SYSTEM PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/DAP/Include
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/DAP/Config
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/CherryUSB
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/CherryUSB/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/CherryUSB/common
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/CherryUSB/class/cdc
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/CherryUSB/class/hub
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/CherryUSB/class/hid
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/CherryUSB/class/msc
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/CherryUSB/port/dwc2
+    ${CMAKE_CURRENT_SOURCE_DIR}/CherryDAP-master/CherryRB/CherryRB-master
 )
 
 # Add project symbols (macros)

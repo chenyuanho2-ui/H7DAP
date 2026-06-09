@@ -230,6 +230,14 @@ SECTIONS
   PROVIDE( __bss_start = __tbss_start );
   PROVIDE( __bss_size = __bss_end - __bss_start );
 
+  /* Non-cacheable section for USB buffers (DTCM is not D-Cache-able) */
+  .noncacheable (NOLOAD) :
+  {
+    . = ALIGN(32);
+    *(.noncacheable)
+    . = ALIGN(32);
+  } >DTCMRAM
+
   /* User_heap_stack section, used to check that there is enough RAM left */
   ._user_heap_stack (NOLOAD) :
   {
