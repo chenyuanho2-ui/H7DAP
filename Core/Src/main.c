@@ -59,7 +59,19 @@ static void MPU_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+/* Debug console: redirect printf to USART1 (polling mode) */
+int __io_putchar(int ch)
+{
+  while (!(USART1->ISR & USART_ISR_TXE_TXFNF)) {}
+  USART1->TDR = (ch & 0xFF);
+  return ch;
+}
 
+int __io_getchar(void)
+{
+  while (!(USART1->ISR & USART_ISR_RXNE_RXFNE)) {}
+  return (int)(USART1->RDR & 0xFF);
+}
 /* USER CODE END 0 */
 
 /**
@@ -108,6 +120,10 @@ int main(void)
   MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
   chry_dap_init(0, USB_OTG_FS_PERIPH_BASE);
+  /* Enable USB interrupt (CherryUSB DWC2 driver does not enable it) */
+  HAL_NVIC_SetPriority(OTG_FS_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(OTG_FS_IRQn);
+  printf("DAPLink: CherryUSB initialized\r\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
